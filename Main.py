@@ -6,3 +6,4 @@ sy('cls')
 
 
 #df.addProduct()
+df.consultProducts()
