@@ -340,7 +340,75 @@ def ProductEntry():
             continue    
 
 
-        
+# Saida de produtos do estoque (mesma logica da entrada de produtos porem subitraindo a quantidade fornecida)
+def ProductExit():
+    sy('cls') 
+    print('\n>> Saida de produto do estoque.\n')
+    while True:
+
+# Pedir o nome do produto e verificando se ele existe na tabela
+        while True:
+            entryproduct = input('\nNome do produto:\n').upper()
+            E = db.cur.execute(f'''
+            SELECT * FROM stock WHERE product = '{entryproduct}'
+            ''')
+            if E.fetchall() == []:
+                sy('cls')
+                print('\n>> Saida de produto do estoque.\n')
+                print('\nProduto não encontrado!')
+                continue
+            break
+
+# Pedir a quantidade de saida do produto
+        while True:
+            try: entry = int(input('\nQuantidade de Saida:\n - '))
+            except:
+                sy('cls')
+                print('\n>> Saida de produto no estoque.\n')
+                print('\nValor invalido!')
+                continue
+            if entry >= 9999 or entry <= 0:
+                sy('cls')
+                print('\n>> Saida de produto no estoque.\n')
+                print('\nValor invalido!')
+                continue
+
+# Subitrai Quantidade anterior com a saida atual 
+            B = db.cur.execute(f'''
+            SELECT amount FROM stock WHERE product = '{entryproduct}'
+            ''')
+            VB = int(B.fetchall()[0][0])
+            total = VB - entry
+
+# Confirmar se o Total não será negativo
+            if total < 0:
+                sy('cls')
+                print('\n>> Saida de produto no estoque.\n')
+                print('\nValor invalido!')
+                print('A quantidade no estoque ficaria abaixo de zero.\n')
+                continue
+            break
+
+# Gravar alterações no DB "stock"
+        db.cur.execute(f'''
+        UPDATE stock SET amount = '{total}' WHERE product = '{entryproduct}'
+        ''')
+        db.con.commit()
+
+# Mensagem de confirmação
+        sy('cls')
+        print('\n>> Saida de produto no estoque.\n')
+        print(f'\nA quantidade de "{entryproduct}" foi atualizada com sucesso.\n{VB} >>> {total}\n')
+
+# Perguntar se quer atualizar outro item
+        exit = input('\nAtualizar novo item?      [S/N]\n').upper()
+        if 'S' not in exit:
+            break 
+            #Menu()
+        else:
+            sy('cls')
+            print('\n>> Saida de produto no estoque.\n')
+            continue
        
             
             
