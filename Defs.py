@@ -7,7 +7,7 @@ def addProduct():
 
 #Pedir nome produto
         while True:
-            product = input('\nNome do produto:\n')
+            product = input('\nNome do produto:\n').upper()
 
 # Pedir categoria
             while True:
@@ -62,7 +62,7 @@ Categoria do produto:
             Setor: {location}      
             \n''')
 
-            if input('Confirmar cadastro?   [S/N]').upper() == 'S':
+            if input('Confirmar cadastro?   [S/N]\n').upper() == 'S':
                 break
             else:
                 continue
@@ -101,7 +101,7 @@ Categoria do produto:
 
             ''')
         
-        new = input('\nCadastrar novo produto?  [S/N]').upper()
+        new = input('\nCadastrar novo produto?  [S/N]\n').upper()
         if new  == 'S':
             continue
         else:
@@ -252,7 +252,7 @@ Categoria do produto:
 
 # Caso o produto não estiver sendo procurado pela 'categoria', pergunta ao ususario pelo o que deve procurar
         if opc != 'category':
-            search = input(f'{by} do produto:\n')
+            search = input(f'{by} do produto:\n').upper()
 
 # Mostrar produtos referentes a pesquisa
         k = db.cur.execute(f'''
@@ -268,7 +268,6 @@ Categoria do produto:
                 print(f'{i:^20}', end =' ')
         print('\n')
         
-
 # Perguntar se quer voltar ao Menu
         exit = input('\nVoltar ao menu?      [S/N]\n').upper()
         if 'S' in exit:
@@ -277,7 +276,69 @@ Categoria do produto:
         else: 
             continue    
         
-        
+
+# Entrada de produtos no estoque
+def ProductEntry():
+    sy('cls') 
+    print('\n>> Entrada de produto no estoque.\n')
+    while True:
+
+# Pedir o nome do produto e verificando se ele existe na tabela
+        while True:
+            entryproduct = input('\nNome do produto:\n').upper()
+            E = db.cur.execute(f'''
+            SELECT * FROM stock WHERE product = '{entryproduct}'
+            ''')
+            if E.fetchall() == []:
+                sy('cls')
+                print('\n>> Entrada de produto no estoque.\n')
+                print('\nProduto não encontrado!')
+                continue
+            break
+
+# Pedir a quantidade de entrada do produto
+        while True:
+            try: entry = int(input('\nQuantidade de entrada:\n'))
+            except:
+                sy('cls')
+                print('\n>> Entrada de produto no estoque.\n')
+                print('\nValor invalido!')
+                continue
+            if entry >= 9999 or entry <= 0:
+                sy('cls')
+                print('\n>> Entrada de produto no estoque.\n')
+                print('\nValor invalido!')
+                continue
+            break
+
+# Somar Quantidade anterior com a entrada atual
+        B = db.cur.execute(f'''
+        SELECT amount FROM stock WHERE product = '{entryproduct}'
+        ''')
+        VB = int(B.fetchall()[0][0])
+        total = VB + entry
+
+# Gravar alterações no DB "stock"
+        db.cur.execute(f'''
+        UPDATE stock SET amount = '{total}' WHERE product = '{entryproduct}'
+        ''')
+        db.con.commit()
+
+# Mensagem de confirmação
+        sy('cls')
+        print('\n>> Entrada de produto no estoque.\n')
+        print(f'\nA quantidade de "{entryproduct}" foi atualizada com sucesso.\n{VB} >>> {total}\n')
+
+# Perguntar se quer atualizar outro item
+        exit = input('\nAtualizar novo item?      [S/N]\n').upper()
+        if 'S' not in exit:
+            break 
+            #Menu()
+        else:
+            sy('cls')
+            print('\n>> Entrada de produto no estoque.\n')
+            continue    
+
 
         
        

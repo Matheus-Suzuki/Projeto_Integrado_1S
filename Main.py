@@ -7,4 +7,5 @@ sy('cls')
 
 #df.addProduct()
 #df.consultProducts()
-df.consultSpec()
+#df.consultSpec()
+df.ProductEntry()
