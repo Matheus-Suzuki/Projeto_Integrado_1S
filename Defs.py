@@ -1,6 +1,6 @@
 from os import system as sy
 import DataBase as db
-from datetime import datetime
+from datetime import datetime as dt
 
 # Cadastrar novo produto
 def addProduct():
@@ -82,17 +82,23 @@ Setor: {location}
 
 # Cria lista com as infomações obtidas       
         Current_product = (id, product, category, amount, location)
+        history = (product, ' ' + str(amount), str(location) )
+        timer = (product, dt.now().strftime('%d/%m/%y   -   %H:%M'))
 
 # Salva as informações no banco de dados "stock"
         db.cur.execute('''
         INSERT INTO stock (id, product, category, amount, location) VALUES (?,?,?,?,?)''', Current_product)
         db.con.commit()
 
-# Adiciona o novo produto na tabela de historico
-        history = (product, str(amount), str(location))
+# Adiciona o novo produto na tabela de historico       
         db.cur.execute(f'''
         INSERT INTO history (product, H_productAmount, H_productLocation) VALUES (?,?,?)''', history)
-        db.con.commit()  
+        db.con.commit() 
+
+# Salva a data e o horario em que o produto foi adicionado
+        db.cur.execute('''
+        INSERT INTO datetimer (product , D_time) VALUES (?,?)''' , timer)
+        db.con.commit() 
 
 # Encerrar cadastro de novos produtos
         sy('cls')
@@ -106,7 +112,7 @@ Setor: {location}
 
 ID: {id:0>4}
 
-            ''')
+        ''')
         
         new = input('\nCadastrar novo produto?  [S/N]\n').upper()
         sy('cls')
@@ -336,6 +342,11 @@ def ProductEntry():
         db.cur.execute(f''' 
         UPDATE history SET H_productAmount = '{HA}' WHERE product = '{entryproduct}'
         ''')
+
+# Gravar alterações no DB datetimer
+        db.cur.execute(f'''
+        INSERT INTO datetimer VALUES ('{entryproduct}', '{dt.now().strftime('%d/%m/%y   -   %H:%M')}')
+        ''')
        
 # Gravar alterações na tabela "stock"
         db.cur.execute(f'''
@@ -419,6 +430,11 @@ def ProductExit():
         UPDATE history SET H_productAmount = '{HA}' WHERE product = '{entryproduct}'
         ''')
 
+# Gravar alterações no DB datetimer
+        db.cur.execute(f'''
+        INSERT INTO datetimer VALUES ('{entryproduct}', '{dt.now().strftime('%d/%m/%y   -   %H:%M')}')
+        ''')
+
 # Gravar alterações no DB "stock"
         db.cur.execute(f'''
         UPDATE stock SET amount = '{total}' WHERE product = '{entryproduct}'
@@ -449,19 +465,29 @@ def ProductHistory():
 # Pedir ao usuario o nome do produto
             product = input('\nProduto:\n').upper()
 
-# Buscar produto no banco de dados 
+# Buscar produto, quantidade e horario de registro no banco de dados 
             H = db.cur.execute(f'''
             SELECT * FROM history WHERE product = '{product}' 
             ''')
             Y = H.fetchall()
 
+            D = db.cur.execute(f'''
+            SELECT * FROM datetimer WHERE product = '{product}' 
+            ''')
+            A = D.fetchall()
+
 # Conferir se o produto existe na tabela, caso exista mostra o historico na tela
             if  Y != []:
                 T = str(Y[0][1])
+                print(f'\nHISTORICO DE {product}:')
+                print('\n')
                 n = 0
-                for i in T:
-                    print (T[n], end =' ')
+                m = 0
+                for i in A:
+                    print ('Movimento: ', T[m]+T[m+1], end =' ')
+                    print(f'      Data / Horario: {A[n][1]}')
                     n += 1
+                    m += 3    
                 break
             else: 
                 print('\nProduto não encontrado!\n')

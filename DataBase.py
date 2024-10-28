@@ -38,3 +38,10 @@ cur.execute('''CREATE TABLE IF NOT EXISTS history(
     )''')
 
 #-----------------------------------------------------#
+
+# Cria a tabela "datetimer" caso não exista.
+cur.execute('''CREATE TABLE IF NOT EXISTS datetimer(
+    product, D_time
+    )''')
+
+#-----------------------------------------------------#
