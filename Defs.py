@@ -85,8 +85,13 @@ Setor: {location}
 # Salva as informações no banco de dados "stock"
         db.cur.execute('''
         INSERT INTO stock (id, product, category, amount, location) VALUES (?,?,?,?,?)''', Current_product)
-        db.con.commit()    
+        db.con.commit()
 
+# Adiciona o novo produto na tabela de historico
+        history = (product, '+' + str(amount), str(location))
+        db.cur.execute(f'''
+        INSERT INTO history (product, H_productAmount, H_productLocation) VALUES (?,?,?)''', history)
+        db.con.commit()  
 
 # Encerrar cadastro de novos produtos
         sy('cls')
@@ -106,7 +111,7 @@ ID: {id:0>4}
         sy('cls')
         if new  == 'S':
             continue
-        else:
+        else: 
             break
         #MENU( )
 
@@ -320,14 +325,25 @@ def ProductEntry():
         VB = int(B.fetchall()[0][0])
         total = VB + entry
 
-# Gravar alterações no DB "stock"
+# Salvar alteração no historico do produto
+        A = db.cur.execute(f'''
+        SELECT H_productAmount FROM history WHERE product = '{entryproduct}'
+        ''')
+        AB = A.fetchone()[0]
+        BB = str(AB)
+        HA = BB + '+' + str(entry)
+        db.cur.execute(f''' 
+        UPDATE history SET H_productAmount = '{HA}' WHERE product = '{entryproduct}'
+        ''')
+       
+# Gravar alterações na tabela "stock"
         db.cur.execute(f'''
         UPDATE stock SET amount = '{total}' WHERE product = '{entryproduct}'
         ''')
         db.con.commit()
 
 # Mensagem de confirmação
-        sy('cls')
+        #sy('cls')
         print('\n>> Entrada de produto no estoque.\n')
         print(f'\nA quantidade de "{entryproduct}" foi atualizada com sucesso.\n{VB} >>> {total}\n')
 
@@ -390,6 +406,17 @@ def ProductExit():
                 print('A quantidade no estoque ficaria abaixo de zero.\n')
                 continue
             break
+
+# Salvar alteração no historico do produto
+        A = db.cur.execute(f'''
+        SELECT H_productAmount FROM history WHERE product = '{entryproduct}'
+        ''')
+        AB = A.fetchone()[0]
+        BB = str(AB)
+        HA = BB + '-' + str(entry)
+        db.cur.execute(f''' 
+        UPDATE history SET H_productAmount = '{HA}' WHERE product = '{entryproduct}'
+        ''')
 
 # Gravar alterações no DB "stock"
         db.cur.execute(f'''
