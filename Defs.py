@@ -1,5 +1,6 @@
 from os import system as sy
 import DataBase as db
+from datetime import datetime
 
 # Cadastrar novo produto
 def addProduct():
@@ -88,7 +89,7 @@ Setor: {location}
         db.con.commit()
 
 # Adiciona o novo produto na tabela de historico
-        history = (product, '+' + str(amount), str(location))
+        history = (product, str(amount), str(location))
         db.cur.execute(f'''
         INSERT INTO history (product, H_productAmount, H_productLocation) VALUES (?,?,?)''', history)
         db.con.commit()  
@@ -331,7 +332,7 @@ def ProductEntry():
         ''')
         AB = A.fetchone()[0]
         BB = str(AB)
-        HA = BB + '+' + str(entry)
+        HA = BB + ' +' + str(entry)
         db.cur.execute(f''' 
         UPDATE history SET H_productAmount = '{HA}' WHERE product = '{entryproduct}'
         ''')
@@ -413,7 +414,7 @@ def ProductExit():
         ''')
         AB = A.fetchone()[0]
         BB = str(AB)
-        HA = BB + '-' + str(entry)
+        HA = BB + ' -' + str(entry)
         db.cur.execute(f''' 
         UPDATE history SET H_productAmount = '{HA}' WHERE product = '{entryproduct}'
         ''')
@@ -439,5 +440,41 @@ def ProductExit():
             print('\n>> Saida de produto no estoque.\n')
             continue
        
-            
+
+# Historico de entrada e saida de produtos
+def ProductHistory():
+    while True:
+        while True:
+
+# Pedir ao usuario o nome do produto
+            product = input('\nProduto:\n').upper()
+
+# Buscar produto no banco de dados 
+            H = db.cur.execute(f'''
+            SELECT * FROM history WHERE product = '{product}' 
+            ''')
+            Y = H.fetchall()
+
+# Conferir se o produto existe na tabela, caso exista mostra o historico na tela
+            if  Y != []:
+                T = str(Y[0][1])
+                n = 0
+                for i in T:
+                    print (T[n], end =' ')
+                    n += 1
+                break
+            else: 
+                print('\nProduto não encontrado!\n')
+                continue
+
+# Perguntar se quer ver o historico de movimentação de outro produto
+        exit = input('\nVer o historico de outro produto?      [S/N]\n').upper()
+        if 'S' not in exit:
+            break 
+            #Menu()
+        else:
+            sy('cls')
+            print('\n>> Historico de movimentação de produto.\n')
+            continue    
+        
             
