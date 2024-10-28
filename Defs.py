@@ -55,11 +55,12 @@ Categoria do produto:
                 break
 
 # Confirmar cadastro do produto
+            sy('cls')
             print(f'''\n
-            Produto: {product}
-            Categoria: {category}
-            Quantidade: {amount}
-            Setor: {location}      
+Produto: {product}
+Categoria: {category}
+Quantidade: {amount}
+Setor: {location}      
             \n''')
 
             if input('Confirmar cadastro?   [S/N]\n').upper() == 'S':
@@ -68,15 +69,15 @@ Categoria do produto:
                 continue
 
 # Criação de ID
-        i = db.curd.execute('''SELECT id FROM IDs''')
+        i = db.cur.execute('''SELECT id FROM IDs''')
         id = int(i.fetchall()[0][0] +1)
 
-        db.curd.execute(f'''
+        db.cur.execute(f'''
         DELETE FROM IDs ''')
 
-        db.curd.execute(f'''
+        db.cur.execute(f'''
         INSERT INTO IDs VALUES ({id})''')
-        db.cond.commit()
+        db.con.commit()
 
 # Cria lista com as infomações obtidas       
         Current_product = (id, product, category, amount, location)
@@ -90,18 +91,19 @@ Categoria do produto:
 # Encerrar cadastro de novos produtos
         sy('cls')
         print(f'''\n
-            Produto cadastrado com sucesso.
+Produto cadastrado com sucesso.
               
-            Produto: {product}
-            Categoria: {category}
-            Quantidade: {amount}
-            Setor: {location} 
+Produto: {product}
+Categoria: {category}
+Quantidade: {amount}
+Setor: {location} 
 
-            ID: {id:0>4}
+ID: {id:0>4}
 
             ''')
         
         new = input('\nCadastrar novo produto?  [S/N]\n').upper()
+        sy('cls')
         if new  == 'S':
             continue
         else:
