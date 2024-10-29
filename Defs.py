@@ -12,7 +12,7 @@ def MainMenu():
         try: MenuSelect = int(input(f'''
     WILD BUNNY ELETRONICS
 
-    >> MENU
+>>  MENU.
 
     REGISTRAR:                   CONSULTAR:
     [1] NOVO PRODUTO.            [4] TABELA GERAL DE PRODUTOS.
@@ -23,7 +23,7 @@ def MainMenu():
     '''))
         except:
             sy('cls')
-            opcValidation = 'Opição invalida, por favor digite um numero entre [1] e [6].'
+            opcValidation = '   Opição invalida, por favor digite um numero entre [1] e [6].'
             continue 
 
 # Chama a função equivalente a escolha do ususario
@@ -47,7 +47,7 @@ def MainMenu():
                 break
             case _:
                 sy('cls')
-                opcValidation = 'Opição invalida, por favor digite um numero entre [1] e [6].'
+                opcValidation = '   Opição invalida, por favor digite um numero entre [1] e [6].'
                 continue 
          
 
@@ -59,8 +59,9 @@ def addProduct():
 #Pedir nome produto
         while True:
             sy('cls')
-            print('\n>> Adicionar novo produto.\n')
-            product = input('\nNome do produto:\n').upper()
+            print('\n    WILD BUNNY ELETRONICS\n')
+            print('\n>>  Adicionar novo produto.\n   ')
+            product = input('\n    Nome do produto:\n    ').upper()
 
 # Pedir categoria
             while True:
@@ -70,9 +71,13 @@ def addProduct():
     [1] Televisores
     [2] Câmeras
     [3] Computadores
-    [4] Celulares e acessórios\n'''))
+    [4] Celulares e acessórios\n    
+    '''))
                 except:
-                    print('\nCategoria invalida!')
+                    sy('cls')
+                    print('\n    WILD BUNNY ELETRONICS\n')
+                    print('\n>>  Adicionar novo produto.\n')
+                    print('\n   Categoria invalida!')
                     continue   
                 match ctg:
                     case 1:
@@ -88,28 +93,39 @@ def addProduct():
                         category = 'Celulares e acessórios'
                         break
                     case _:
-                        print('\nCategoria invalida!')
+                        sy('cls')
+                        print('\n    WILD BUNNY ELETRONICS\n')
+                        print('\n>>  Adicionar novo produto.\n')
+                        print('\n    Categoria invalida!')
                         continue
                 
 
 # Pedir quatidade
             while True:
-                try: amount = int(input('\nQuantidade:\n'))
-                except: 
-                    print('\nDigite um numero inteiro!', end = ' ')
+                try: amount = int(input('\n    Quantidade:\n   '))
+                except:
+                    sy('cls')
+                    print('\n    WILD BUNNY ELETRONICS\n')
+                    print('\n>>  Adicionar novo produto.\n') 
+                    print('\n    Digite um numero inteiro!', end = ' ')
                     continue
                 break
 
+# Converte numeros negativos em positivos
+            if amount < 0:
+                amount = -amount
+
 # Confirmar cadastro do produto
             sy('cls')
-            print('\n>> Adicionar novo produto.\n')
+            print('\n    WILD BUNNY ELETRONICS\n')
+            print('\n>>  Adicionar novo produto.\n')
             print(f'''\n
-Produto: {product}
-Categoria: {category}
-Quantidade: {amount}     
+    Produto: {product}
+    Categoria: {category}
+    Quantidade: {amount}     
             \n''')
 
-            if input('Confirmar cadastro?   [S/N]\n').upper() == 'S':
+            if input('    Confirmar cadastro?   [S/N]\n    ').upper() == 'S':
                 break
             else:
                 continue
@@ -147,19 +163,20 @@ Quantidade: {amount}
 
 # Encerrar cadastro de novos produtos
         sy('cls')
-        print('\n>> Adicionar novo produto.\n')
+        print('\n    WILD BUNNY ELETRONICS\n')
+        print('\n>>  Adicionar novo produto.\n')
         print(f'''\n
-Produto cadastrado com sucesso.
+    Produto cadastrado com sucesso.
               
-Produto: {product}
-Categoria: {category}
-Quantidade: {amount}
+    Produto: {product}
+    Categoria: {category}
+    Quantidade: {amount}
 
-ID: {id:0>4}
+    ID: {id:0>4}
 
         ''')
         
-        new = input('\nCadastrar novo produto?  [S/N]\n').upper()
+        new = input('\n    Cadastrar novo produto?  [S/N]\n    ').upper()
         sy('cls')
         if new  == 'S':
             continue
@@ -174,7 +191,8 @@ def consultProducts():
     while True:
         while True:
             sy('cls')
-            print('\n>> Consultar todos os produto.\n')
+            print('\n    WILD BUNNY ELETRONICS\n')
+            print('\n>>  Consultar todos os produto.\n')
 # Perguntar a ordem dos produtos
             try: select = int(input('''\n
     Verificar estoque por:
@@ -186,7 +204,7 @@ def consultProducts():
                                     
     '''))
             except:
-                print('\nOpção invalida!')
+                print('\n    Opção invalida!')
                 continue
             match select:
                 case 1:
@@ -202,11 +220,12 @@ def consultProducts():
                     opc = 'amount'
                     break
                 case _:
-                    print('\nOpção invalida!')
+                    print('\n    Opção invalida!')
                     continue
         
 # Mostrar tabela dos produtos ordenada pela escolha do usuario       
         sy('cls')
+        print('\n    WILD BUNNY ELETRONICS\n')
         print('\n>> Consultar todos os produtos.\n')
         format =('ID','PRODUTO','CATEGORIA','QUANTIDADE')
         for l in format:
@@ -220,7 +239,7 @@ def consultProducts():
         print('\n')
 
 # Perguntar se quer retornar ao menu ou vizualizar a tabela de outra forma 
-        exit = input('\nVoltar ao menu?      [S/N]\n').upper()
+        exit = input('\n    Voltar ao menu?      [S/N]\n    ').upper()
         if 'S' in exit:
             MainMenu() 
         else: 
@@ -234,17 +253,21 @@ def consultSpec():
         
 # Perguntar Qual categoria será buscada
         while True:
-            print('\n>> Consultar produto.\n')
+            print('\n    WILD BUNNY ELETRONICS\n')
+            print('\n>>  Consultar produto.\n')
             try: select = int(input('''\n
-Procurar produto por:
-[1] ID
-[2] Nome
-[3] Categoria
+    Procurar produto por:
                                     
-        '''))
+    [1] ID
+    [2] Nome
+    [3] Categoria
+                                    
+    '''))
             except:
                 sy('cls')
-                print('\nOpção invalida!')
+                print('\n    WILD BUNNY ELETRONICS\n')
+                print('\n>>  Consultar produto.\n')
+                print('\n    Opção invalida!')
                 continue
 
 # Opções possiveis
@@ -261,9 +284,10 @@ Procurar produto por:
 # Em caso de escolher 'categoria' é necessário outra seleção de opção para facilitar o manuseio do usuario
                 case 3:
                     opc = 'category'
+                    sy('cls')
+                    print('\n    WILD BUNNY ELETRONICS\n')
+                    print('\n>>  Consultar produto.\n')
                     while True:
-                        sy('cls')
-                        print('\n>> Consultar produto.\n')
                         try: catg = int(input('''\n
     Categoria do produto:
     [1] Televisores
@@ -271,10 +295,10 @@ Procurar produto por:
     [3] Computadores
     [4] Celulares e acessórios
                                         
-                        '''))
+    '''))
                         except:
                             sy('cls')
-                            print('\nOpção invalida!')
+                            print('\n    Opção invalida!')
                             continue
                         match catg:
                             case 1:
@@ -291,19 +315,23 @@ Procurar produto por:
                                 break
                             case _:
                                 sy('cls')
-                                print('\n>> Consultar produto.\n')
-                                print('\nOpção invalida!')
+                                print('\n    WILD BUNNY ELETRONICS\n')
+                                print('\n>>  Consultar produto.\n')
+                                print('\n    Opção invalida!')
                                 continue
                 case _:
                     sy('cls')
-                    print('\nOpção invalida!')
+                    print('\n    Opção invalida!')
                     continue
             if opc == 'category':
                 break
 
 # Caso o produto não estiver sendo procurado pela 'categoria', pergunta ao ususario pelo o que deve procurar
         if opc != 'category':
-            search = input(f'{by} do produto:\n').upper()
+            sy('cls')
+            print('\n    WILD BUNNY ELETRONICS\n')
+            print('\n>>  Consultar produto.\n')
+            search = input(f'    {by} do produto:\n    ').upper()
 
 # Mostrar produtos referentes a pesquisa
         k = db.cur.execute(f'''
@@ -312,6 +340,8 @@ Procurar produto por:
         J = k.fetchall()
         if J != []:
             sy('cls')
+            print('\n    WILD BUNNY ELETRONICS\n')
+            print('\n>>  Consultar produto.\n')
             print('\n')
             format = ('ID','PRODUTO','CATEGORIA','QUANTIDADE')
             for l in format:
@@ -322,7 +352,7 @@ Procurar produto por:
                     print(f'{i:^15}', end =' ')
             print('\n')
         else:
-            newTry = input('\nProduto não encontrado, tentar novamente?   [S/N]\n').upper()
+            newTry = input('\n    Produto não encontrado, tentar novamente?   [S/N]\n    ').upper()
             if "S" in newTry:
                 continue
             else:
@@ -330,7 +360,7 @@ Procurar produto por:
                 break
         
 # Perguntar se quer voltar ao Menu
-        exit = input('\nVoltar ao menu?      [S/N]\n').upper()
+        exit = input('\n    Voltar ao menu?      [S/N]\n    ').upper()
         if 'S' in exit:
             sy('cls')
             MainMenu()
@@ -341,35 +371,39 @@ Procurar produto por:
 
 # Entrada de produtos no estoque
 def ProductEntry():
-    sy('cls') 
-    print('\n>> Entrada de produto no estoque.\n')
+    sy('cls')
+    print('\n    WILD BUNNY ELETRONICS\n') 
+    print('\n>>  Entrada de produto no estoque.\n')
     while True:
 
 # Pedir o nome do produto e verificando se ele existe na tabela
         while True:
-            entryproduct = input('\nNome do produto:\n').upper()
+            entryproduct = input('\n    Nome do produto:\n    ').upper()
             E = db.cur.execute(f'''
             SELECT * FROM stock WHERE product = '{entryproduct}'
             ''')
             if E.fetchall() == []:
                 sy('cls')
-                print('\n>> Entrada de produto no estoque.\n')
-                print('\nProduto não encontrado!')
+                print('\n    WILD BUNNY ELETRONICS\n')
+                print('\n>>  Entrada de produto no estoque.\n')
+                print('\n    Produto não encontrado!')
                 continue
             break
 
 # Pedir a quantidade de entrada do produto
         while True:
-            try: entry = int(input('\nQuantidade de entrada:\n'))
+            try: entry = int(input('\n    Quantidade de entrada:\n    '))
             except:
                 sy('cls')
-                print('\n>> Entrada de produto no estoque.\n')
-                print('\nValor invalido!')
+                print('\n    WILD BUNNY ELETRONICS\n')
+                print('\n>>  Entrada de produto no estoque.\n')
+                print('\n    Valor invalido!')
                 continue
             if entry >= 9999 or entry <= 0:
                 sy('cls')
-                print('\n>> Entrada de produto no estoque.\n')
-                print('\nValor invalido!')
+                print('\n    WILD BUNNY ELETRONICS\n')
+                print('\n>>  Entrada de produto no estoque.\n')
+                print('\n    Valor invalido!')
                 continue
             break
 
@@ -404,52 +438,58 @@ def ProductEntry():
 
 # Mensagem de confirmação
         sy('cls')
-        print('\n>> Entrada de produto no estoque.\n')
-        print(f'\nA quantidade de "{entryproduct}" foi atualizada com sucesso.\n{VB} >>> {total}\n')
+        print('\n    WILD BUNNY ELETRONICS\n')
+        print('\n>>  Entrada de produto no estoque.\n')
+        print(f'\n    A quantidade de "{entryproduct}" foi atualizada com sucesso.\n    {VB} >>> {total}\n')
 
 # Perguntar se quer atualizar outro item
-        exit = input('\nAtualizar novo item?      [S/N]\n').upper()
+        exit = input('\n    Atualizar novo item?      [S/N]\n    ').upper()
         if 'S' not in exit:
             MainMenu()
             break 
             
         else:
             sy('cls')
-            print('\n>> Entrada de produto no estoque.\n')
+            print('\n    WILD BUNNY ELETRONICS\n')
+            print('\n>>  Entrada de produto no estoque.\n')
             continue    
 
 
 # Saida de produtos do estoque (mesma logica da entrada de produtos porem subitraindo a quantidade fornecida)
 def ProductExit():
-    sy('cls') 
-    print('\n>> Saida de produto do estoque.\n')
+    sy('cls')
+    print('\n    WILD BUNNY ELETRONICS\n') 
+    print('\n>>  Saida de produto do estoque.\n')
     while True:
 
 # Pedir o nome do produto e verificando se ele existe na tabela
         while True:
-            entryproduct = input('\nNome do produto:\n').upper()
+            entryproduct = input('\n    Nome do produto:\n    ').upper()
             E = db.cur.execute(f'''
             SELECT * FROM stock WHERE product = '{entryproduct}'
             ''')
             if E.fetchall() == []:
                 sy('cls')
-                print('\n>> Saida de produto do estoque.\n')
-                print('\nProduto não encontrado!')
+                print('\n    WILD BUNNY ELETRONICS\n')
+                print('\n>>  Saida de produto do estoque.\n')
+                print('\n    Produto não encontrado!')
                 continue
             break
 
 # Pedir a quantidade de saida do produto
         while True:
-            try: entry = int(input('\nQuantidade de Saida:\n - '))
+            try: entry = int(input('\n    Quantidade de Saida:\n    - '))
             except:
                 sy('cls')
+                print('\n    WILD BUNNY ELETRONICS\n')
                 print('\n>> Saida de produto no estoque.\n')
-                print('\nValor invalido!')
+                print('\n    Valor invalido!')
                 continue
             if entry >= 9999 or entry <= 0:
                 sy('cls')
+                print('\n    WILD BUNNY ELETRONICS\n')
                 print('\n>> Saida de produto no estoque.\n')
-                print('\nValor invalido!')
+                print('\n    Valor invalido!')
                 continue
 
 # Subitrai Quantidade anterior com a saida atual 
@@ -462,9 +502,10 @@ def ProductExit():
 # Confirmar se o Total não será negativo
             if total < 0:
                 sy('cls')
+                print('\n    WILD BUNNY ELETRONICS\n')
                 print('\n>> Saida de produto no estoque.\n')
-                print('\nValor invalido!')
-                print('A quantidade no estoque ficaria abaixo de zero.\n')
+                print('\n    Valor invalido!')
+                print('    A quantidade no estoque ficaria abaixo de zero.\n')
                 continue
             break
 
@@ -492,16 +533,18 @@ def ProductExit():
 
 # Mensagem de confirmação
         sy('cls')
+        print('\n    WILD BUNNY ELETRONICS\n')
         print('\n>> Saida de produto no estoque.\n')
-        print(f'\nA quantidade de "{entryproduct}" foi atualizada com sucesso.\n{VB} >>> {total}\n')
+        print(f'\n    A quantidade de "{entryproduct}" foi atualizada com sucesso.\n{VB} >>> {total}\n')
 
 # Perguntar se quer atualizar outro item
-        exit = input('\nAtualizar novo item?      [S/N]\n').upper()
+        exit = input('\n    Atualizar novo item?      [S/N]\n    ').upper()
         if 'S' not in exit:
             MainMenu()
             break     
         else:
             sy('cls')
+            print('\n    WILD BUNNY ELETRONICS\n')
             print('\n>> Saida de produto no estoque.\n')
             continue
        
@@ -510,11 +553,12 @@ def ProductExit():
 def ProductHistory():
     sy('cls')
     while True:
-        while True:
-            sy('cls')
-            print('\n>> Consultar historico de movimentação do produto.\n')
+        print('\n    WILD BUNNY ELETRONICS\n')
+        print('\n>>  Consultar historico de movimentação do produto.\n')
+        while True: 
+            
 # Pedir ao usuario o nome do produto
-            product = input('\nProduto:\n').upper()
+            product = input('\n    Produto:\n    ').upper()
 
 # Buscar produto, quantidade e horario de registro no banco de dados 
             H = db.cur.execute(f'''
@@ -529,30 +573,38 @@ def ProductHistory():
 
 # Conferir se o produto existe na tabela, caso exista mostra o historico na tela
             sy('cls')
-            print('\n>> Consultar historico de movimentação do produto.\n')
+            print('\n    WILD BUNNY ELETRONICS\n')
+            print('\n>>  Consultar historico de movimentação do produto.\n')
             if  Y != []:
                 T = str(Y[0][1])
-                print(f'\nHISTORICO DE {product}:')
+                print(f'\n    HISTORICO DE {product}:')
                 print('\n')
-                n = 0
-                m = 0
+            else: 
+                print('\n    Produto não encontrado!\n')
+                continue
+            n = 0
+            m = 0
+            print('    Movimento        Data          Horario')
+            try: 
                 for i in A:
-                    print ('Movimento: ', T[m]+T[m+1], end =' ')
-                    print(f'      Data / Horario: {A[n][1]}')
+                    print ('       ' + T[m]+T[m+1], end =' ')
+                    print(f'           {A[n][1]}')
                     n += 1
                     m += 3    
                 break
-            else: 
-                print('\nProduto não encontrado!\n')
-                continue
+            except:
+                print ('       ' + T[-2]+T[-1], end =' ')
+                print(f'           {A[n][1]}')
+            
 
 # Perguntar se quer ver o historico de movimentação de outro produto
-        exit = input('\nVer o historico de outro produto?      [S/N]\n').upper()
-        if 'S' not in exit:
-            MainMenu()
-            break 
-        else:
-            sy('cls')
-            print('\n>> Historico de movimentação de produto.\n')
-            continue    
+            exit = input('\n    Ver o historico de outro produto?      [S/N]\n    ').upper()
+            if 'S' not in exit:
+                MainMenu()
+                break 
+            else:
+                sy('cls')
+                print('\n    WILD BUNNY ELETRONICS\n')
+                print('\n>> Historico de movimentação de produto.\n')
+                continue    
         
