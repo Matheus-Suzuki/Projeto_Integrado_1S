@@ -2,22 +2,75 @@ from os import system as sy
 import DataBase as db
 from datetime import datetime as dt
 
+#Menu
+def MainMenu():
+    sy('cls')
+    opcValidation =' ' 
+    while True:
+
+# Mostra a seleção de opições no menu principal
+        try: MenuSelect = int(input(f'''
+    WILD BUNNY ELETRONICS
+
+    >> MENU
+
+    REGISTRAR:                   CONSULTAR:
+    [1] NOVO PRODUTO.            [4] TABELA GERAL DE PRODUTOS.
+    [2] ENTRADA DE PRODUTO.      [5] INFORMAÇÕES DE PRODUTO ESPECIFICO.
+    [3] SAIDA DE PRODUTO.        [6] HISTORICO DE MOVIMENTAÇÃO DE PRODUTO.
+
+    {opcValidation}
+    '''))
+        except:
+            sy('cls')
+            opcValidation = 'Opição invalida, por favor digite um numero entre [1] e [6].'
+            continue 
+
+# Chama a função equivalente a escolha do ususario
+        match MenuSelect:
+            case 1:
+                addProduct()
+                break
+            case 2:
+                ProductEntry()
+                break
+            case 3:
+                ProductExit()
+                break
+            case 4:
+                consultProducts()
+                break
+            case 5:
+                consultSpec()
+            case 6:
+                ProductHistory()
+                break
+            case _:
+                sy('cls')
+                opcValidation = 'Opição invalida, por favor digite um numero entre [1] e [6].'
+                continue 
+         
+
 # Cadastrar novo produto
 def addProduct():
+    sy('cls')
     while True:
 
 #Pedir nome produto
         while True:
+            sy('cls')
+            print('\n>> Adicionar novo produto.\n')
             product = input('\nNome do produto:\n').upper()
 
 # Pedir categoria
             while True:
                 try:    ctg = int(input(''' 
-Categoria do produto:
-[1] Televisores
-[2] Câmeras
-[3] Computadores
-[4] Celulares e acessórios\n'''))
+    Categoria do produto:
+                                        
+    [1] Televisores
+    [2] Câmeras
+    [3] Computadores
+    [4] Celulares e acessórios\n'''))
                 except:
                     print('\nCategoria invalida!')
                     continue   
@@ -47,21 +100,13 @@ Categoria do produto:
                     continue
                 break
 
-# Pedir Setor no estoque
-            while True:
-                try: location = int(input('\nSetor no estoque:\n'))
-                except: 
-                    print('\nDigite um numero inteiro!', end = ' ')
-                    continue
-                break
-
 # Confirmar cadastro do produto
             sy('cls')
+            print('\n>> Adicionar novo produto.\n')
             print(f'''\n
 Produto: {product}
 Categoria: {category}
-Quantidade: {amount}
-Setor: {location}      
+Quantidade: {amount}     
             \n''')
 
             if input('Confirmar cadastro?   [S/N]\n').upper() == 'S':
@@ -81,18 +126,18 @@ Setor: {location}
         db.con.commit()
 
 # Cria lista com as infomações obtidas       
-        Current_product = (id, product, category, amount, location)
-        history = (product, ' ' + str(amount), str(location) )
+        Current_product = (id, product, category, amount)
+        history = (product, ' ' + str(amount))
         timer = (product, dt.now().strftime('%d/%m/%y   -   %H:%M'))
 
 # Salva as informações no banco de dados "stock"
         db.cur.execute('''
-        INSERT INTO stock (id, product, category, amount, location) VALUES (?,?,?,?,?)''', Current_product)
+        INSERT INTO stock (id, product, category, amount) VALUES (?,?,?,?)''', Current_product)
         db.con.commit()
 
 # Adiciona o novo produto na tabela de historico       
         db.cur.execute(f'''
-        INSERT INTO history (product, H_productAmount, H_productLocation) VALUES (?,?,?)''', history)
+        INSERT INTO history (product, H_productAmount) VALUES (?,?)''', history)
         db.con.commit() 
 
 # Salva a data e o horario em que o produto foi adicionado
@@ -102,13 +147,13 @@ Setor: {location}
 
 # Encerrar cadastro de novos produtos
         sy('cls')
+        print('\n>> Adicionar novo produto.\n')
         print(f'''\n
 Produto cadastrado com sucesso.
               
 Produto: {product}
 Categoria: {category}
 Quantidade: {amount}
-Setor: {location} 
 
 ID: {id:0>4}
 
@@ -118,25 +163,26 @@ ID: {id:0>4}
         sy('cls')
         if new  == 'S':
             continue
-        else: 
+        else:
+            MainMenu() 
             break
-        #MENU( )
 
 
 # Consultar tabela de produtos
 def consultProducts():
-
+    sy('cls')
     while True:
         while True:
-
+            sy('cls')
+            print('\n>> Consultar todos os produto.\n')
 # Perguntar a ordem dos produtos
             try: select = int(input('''\n
     Verificar estoque por:
+                                    
     [1] ID
     [2] Ordem alfabética
     [3] Categoria
     [4] Quantidade no estoque
-    [5] Setor do estoque
                                     
     '''))
             except:
@@ -155,16 +201,14 @@ def consultProducts():
                 case 4:
                     opc = 'amount'
                     break
-                case 5:
-                    opc = 'location'
-                    break
                 case _:
                     print('\nOpção invalida!')
                     continue
         
 # Mostrar tabela dos produtos ordenada pela escolha do usuario       
         sy('cls')
-        format =('ID','PRODUTO','CATEGORIA','QUANTIDADE','SETOR')
+        print('\n>> Consultar todos os produtos.\n')
+        format =('ID','PRODUTO','CATEGORIA','QUANTIDADE')
         for l in format:
             print(f'{l:^20}', end =' ')
         for lines in db.cur.execute(f''' 
@@ -178,30 +222,24 @@ def consultProducts():
 # Perguntar se quer retornar ao menu ou vizualizar a tabela de outra forma 
         exit = input('\nVoltar ao menu?      [S/N]\n').upper()
         if 'S' in exit:
-            break
+            MainMenu() 
         else: 
             continue
 
-    # Voltar ao Menu
-        #menu()
-
-
 # Comsulta expecifica
 def consultSpec():
+    sy('cls')
     opc = ' '
     while True:
-        sy('cls')
-
+        
 # Perguntar Qual categoria será buscada
         while True:
-            
-
+            print('\n>> Consultar produto.\n')
             try: select = int(input('''\n
 Procurar produto por:
 [1] ID
 [2] Nome
 [3] Categoria
-[4] Setor no estoque
                                     
         '''))
             except:
@@ -224,12 +262,14 @@ Procurar produto por:
                 case 3:
                     opc = 'category'
                     while True:
+                        sy('cls')
+                        print('\n>> Consultar produto.\n')
                         try: catg = int(input('''\n
-Categoria do produto:
-[1] Televisores
-[2] Câmeras
-[3] Computadores
-[4] Celulares e acessórios
+    Categoria do produto:
+    [1] Televisores
+    [2] Câmeras
+    [3] Computadores
+    [4] Celulares e acessórios
                                         
                         '''))
                         except:
@@ -251,12 +291,9 @@ Categoria do produto:
                                 break
                             case _:
                                 sy('cls')
+                                print('\n>> Consultar produto.\n')
                                 print('\nOpção invalida!')
                                 continue
-                case 4:
-                    opc = 'location'
-                    by = 'Setor'
-                    break
                 case _:
                     sy('cls')
                     print('\nOpção invalida!')
@@ -272,21 +309,32 @@ Categoria do produto:
         k = db.cur.execute(f'''
         SELECT * FROM stock WHERE {opc} LIKE '%{search}%'
         ''')
-        print('\n')
-        format = ('ID','PRODUTO','CATEGORIA','QUANTIDADE','SETOR')
-        for l in format:
-            print(f'{l:^20}', end =' ')
-        for lines in k:
+        J = k.fetchall()
+        if J != []:
+            sy('cls')
             print('\n')
-            for i in lines:    
-                print(f'{i:^20}', end =' ')
-        print('\n')
+            format = ('ID','PRODUTO','CATEGORIA','QUANTIDADE')
+            for l in format:
+                print(f'{l:^15}', end =' ')
+            for lines in J:
+                print('\n')
+                for i in lines:    
+                    print(f'{i:^15}', end =' ')
+            print('\n')
+        else:
+            newTry = input('\nProduto não encontrado, tentar novamente?   [S/N]\n').upper()
+            if "S" in newTry:
+                continue
+            else:
+                MainMenu()
+                break
         
 # Perguntar se quer voltar ao Menu
         exit = input('\nVoltar ao menu?      [S/N]\n').upper()
         if 'S' in exit:
+            sy('cls')
+            MainMenu()
             break 
-            #Menu()
         else: 
             continue    
         
@@ -355,15 +403,16 @@ def ProductEntry():
         db.con.commit()
 
 # Mensagem de confirmação
-        #sy('cls')
+        sy('cls')
         print('\n>> Entrada de produto no estoque.\n')
         print(f'\nA quantidade de "{entryproduct}" foi atualizada com sucesso.\n{VB} >>> {total}\n')
 
 # Perguntar se quer atualizar outro item
         exit = input('\nAtualizar novo item?      [S/N]\n').upper()
         if 'S' not in exit:
+            MainMenu()
             break 
-            #Menu()
+            
         else:
             sy('cls')
             print('\n>> Entrada de produto no estoque.\n')
@@ -449,8 +498,8 @@ def ProductExit():
 # Perguntar se quer atualizar outro item
         exit = input('\nAtualizar novo item?      [S/N]\n').upper()
         if 'S' not in exit:
-            break 
-            #Menu()
+            MainMenu()
+            break     
         else:
             sy('cls')
             print('\n>> Saida de produto no estoque.\n')
@@ -459,9 +508,11 @@ def ProductExit():
 
 # Historico de entrada e saida de produtos
 def ProductHistory():
+    sy('cls')
     while True:
         while True:
-
+            sy('cls')
+            print('\n>> Consultar historico de movimentação do produto.\n')
 # Pedir ao usuario o nome do produto
             product = input('\nProduto:\n').upper()
 
@@ -477,6 +528,8 @@ def ProductHistory():
             A = D.fetchall()
 
 # Conferir se o produto existe na tabela, caso exista mostra o historico na tela
+            sy('cls')
+            print('\n>> Consultar historico de movimentação do produto.\n')
             if  Y != []:
                 T = str(Y[0][1])
                 print(f'\nHISTORICO DE {product}:')
@@ -496,11 +549,10 @@ def ProductHistory():
 # Perguntar se quer ver o historico de movimentação de outro produto
         exit = input('\nVer o historico de outro produto?      [S/N]\n').upper()
         if 'S' not in exit:
+            MainMenu()
             break 
-            #Menu()
         else:
             sy('cls')
             print('\n>> Historico de movimentação de produto.\n')
             continue    
         
-            

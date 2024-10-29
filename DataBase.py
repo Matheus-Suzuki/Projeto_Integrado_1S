@@ -13,8 +13,7 @@ cur.execute('''CREATE TABLE IF NOT EXISTS stock(
     id,
     product,
     category,
-    amount,
-    location    
+    amount   
     )''')
 
 #-----------------------------------------------------#
@@ -34,7 +33,7 @@ INSERT INTO IDs VALUES (
 
 # Cria a tabela "history" caso não exista.
 cur.execute('''CREATE TABLE IF NOT EXISTS history(
-    product, H_productAmount, H_productLocation
+    product, H_productAmount
     )''')
 
 #-----------------------------------------------------#
