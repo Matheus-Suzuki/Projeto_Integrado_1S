@@ -13,7 +13,8 @@ cur.execute('''CREATE TABLE IF NOT EXISTS stock(
     id,
     product,
     category,
-    amount   
+    amount,
+    location
     )''')
 
 #-----------------------------------------------------#

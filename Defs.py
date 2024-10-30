@@ -12,12 +12,13 @@ def MainMenu():
         try: MenuSelect = int(input(f'''
     WILD BUNNY ELETRONICS
 
->>  MENU.                                             (m) retorna ao menu.
+>>  MENU.                                               (m) retorna ao menu.
 
     REGISTRAR:                   CONSULTAR:
-    [1] NOVO PRODUTO.            [4] TABELA GERAL DE PRODUTOS.
-    [2] ENTRADA DE PRODUTO.      [5] INFORMAÇÕES DE PRODUTO ESPECIFICO.
-    [3] SAIDA DE PRODUTO.        [6] HISTORICO DE MOVIMENTAÇÃO DE PRODUTO.
+    [1] NOVO PRODUTO.            [5] TABELA GERAL DE PRODUTOS.
+    [2] ENTRADA DE PRODUTO.      [6] INFORMAÇÕES DE PRODUTO ESPECIFICO.
+    [3] SAIDA DE PRODUTO.        [7] HISTORICO DE MOVIMENTAÇÃO DE PRODUTO.
+    [4] MUDANÇA DE SETOR.        [8] SETOR DE PROCUTO ESPECIFICO NO ESTOQUE.
 
     {opcValidation}
     '''))
@@ -38,13 +39,17 @@ def MainMenu():
                 ProductExit()
                 break
             case 4:
-                consultProducts()
+                pass
                 break
             case 5:
-                consultSpec()
+                consultProducts()
             case 6:
-                ProductHistory()
+                consultSpec()
                 break
+            case 7:
+                ProductHistory()
+            case 8:
+                pass
             case _:
                 sy('cls')
                 opcValidation = '   Opição invalida, por favor digite um numero entre [1] e [6].'
@@ -108,7 +113,7 @@ def addProduct():
 
 # Pedir quatidade
             while True:
-                try: amount = int(input('\n    Quantidade:\n   '))
+                try: amount = int(input('\n    Quantidade:\n    '))
                 except:
                     sy('cls')
                     print('\n    WILD BUNNY ELETRONICS\n')
@@ -121,6 +126,43 @@ def addProduct():
             if amount < 0:
                 amount = -amount
 
+# Pergu8ntar local do produto dentro do estoque
+            while True:
+                try: QLocation = int(input('''
+    Setor de armazenamento no estoque:
+
+    [1] Norte
+    [2] Sul
+    [3] Leste
+    [4] Oeste
+                                      
+    '''))
+                except:
+                    sy('cls')
+                    print('\n    WILD BUNNY ELETRONICS\n')
+                    print('\n>>  Adicionar novo produto.\n') 
+                    print('\n    Setor invalido!', end = ' ')
+                    continue
+                match QLocation:
+                    case 1:
+                        location = 'Norte'
+                        break
+                    case 2:
+                        location = 'Sul'
+                        break
+                    case 3:
+                        location = 'Leste'
+                        break
+                    case 4:
+                        location = 'Oeste'
+                        break
+                    case _:
+                        sy('cls')
+                        print('\n    WILD BUNNY ELETRONICS\n')
+                        print('\n>>  Adicionar novo produto.\n') 
+                        print('\n    Setor invalido!', end = ' ')
+                        continue
+
 # Confirmar cadastro do produto
             sy('cls')
             print('\n    WILD BUNNY ELETRONICS\n')
@@ -128,7 +170,9 @@ def addProduct():
             print(f'''\n
     Produto: {product}
     Categoria: {category}
-    Quantidade: {amount}     
+    Quantidade: {amount} 
+    Setor no estoque: {location}
+    
             \n''')
             Q = input('    Confirmar cadastro?   [S/N]\n    ').upper()
             ReturnMainmenu(Q)
@@ -149,13 +193,13 @@ def addProduct():
         db.con.commit()
 
 # Cria lista com as infomações obtidas       
-        Current_product = (id, product, category, amount)
+        Current_product = (id, product, category, amount, location)
         history = (product, ' ' + str(amount))
         timer = (product, dt.now().strftime('%d/%m/%y   -   %H:%M'))
 
 # Salva as informações no banco de dados "stock"
         db.cur.execute('''
-        INSERT INTO stock (id, product, category, amount) VALUES (?,?,?,?)''', Current_product)
+        INSERT INTO stock (id, product, category, amount, location) VALUES (?,?,?,?,?)''', Current_product)
         db.con.commit()
 
 # Adiciona o novo produto na tabela de historico       
@@ -178,6 +222,7 @@ def addProduct():
     Produto: {product}
     Categoria: {category}
     Quantidade: {amount}
+    Setor: {location}
 
     ID: {id:0>4}
 
@@ -208,6 +253,7 @@ def consultProducts():
     [2] Ordem alfabética
     [3] Categoria
     [4] Quantidade no estoque
+    [5] Setor no estoque
                                     
     '''))   
             except:
@@ -226,6 +272,9 @@ def consultProducts():
                 case 4:
                     opc = 'amount'
                     break
+                case 5:
+                    opc = 'location'
+                    break
                 case _:
                     print('\n    Opção invalida!')
                     continue
@@ -234,7 +283,7 @@ def consultProducts():
         sy('cls')
         print('\n    WILD BUNNY ELETRONICS\n')
         print('\n>> Consultar todos os produtos.\n')
-        format =('ID','PRODUTO','CATEGORIA','QUANTIDADE')
+        format =('ID','PRODUTO','CATEGORIA','QUANTIDADE', 'SETOR')
         for l in format:
             print(f'{l:^20}', end =' ')
         for lines in db.cur.execute(f''' 
@@ -353,7 +402,7 @@ def consultSpec():
             print('\n    WILD BUNNY ELETRONICS\n')
             print('\n>>  Consultar produto.\n')
             print('\n')
-            format = ('ID','PRODUTO','CATEGORIA','QUANTIDADE')
+            format = ('ID','PRODUTO','CATEGORIA','QUANTIDADE', 'SETOR')
             for l in format:
                 print(f'{l:^15}', end =' ')
             for lines in J:
@@ -570,17 +619,17 @@ def ProductHistory():
             print('\n>> Historico de movimentação de produto.\n')
 
 # Pedir ao usuario o nome do produto
-            product = input('\n    Produto:\n    ').upper()
-            ReturnMainmenu(product)
+            Hproduct = input('\n    Produto:\n    ').upper()
+            ReturnMainmenu(Hproduct)
 
 # Buscar produto, quantidade e horario de registro no banco de dados 
             H = db.cur.execute(f'''
-            SELECT * FROM history WHERE product = '{product}' 
+            SELECT * FROM history WHERE product = '{Hproduct}' 
             ''')
             Y = H.fetchall()
 
             D = db.cur.execute(f'''
-            SELECT * FROM datetimer WHERE product = '{product}' 
+            SELECT * FROM datetimer WHERE product = '{Hproduct}' 
             ''')
             A = D.fetchall()
 
@@ -590,7 +639,7 @@ def ProductHistory():
             print('\n>>  Consultar historico de movimentação do produto.\n')
             if  Y != []:
                 T = str(Y[0][1])
-                print(f'\n    HISTORICO DE {product}:')
+                print(f'\n    HISTORICO DE {Hproduct}:')
                 print('\n')
             else: 
                 print('\n    Produto não encontrado!\n')
@@ -608,13 +657,15 @@ def ProductHistory():
             except:
                 print ('       ' + T[-2]+T[-1], end =' ')
                 print(f'           {A[n][1]}')
-            
+            finally:
 
 # Perguntar se quer ver o historico de movimentação de outro produto
-            exit = input('\n    Ver o historico de outro produto?      [S/N]\n    ').upper()
-            if 'S' not in exit:
-                MainMenu()
-                break 
-            else:
-                continue    
+                exit = input('\n    Ver o historico de outro produto?      [S/N]\n    ').upper()
+                if 'S' not in exit:
+                    MainMenu()
+                    break 
+                else:
+                    continue   
+
+ 
         
