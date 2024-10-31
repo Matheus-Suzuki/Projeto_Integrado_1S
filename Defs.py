@@ -18,7 +18,7 @@ def MainMenu():
     [1] NOVO PRODUTO.            [5] TABELA GERAL DE PRODUTOS.
     [2] ENTRADA DE PRODUTO.      [6] INFORMAÇÕES DE PRODUTO ESPECIFICO.
     [3] SAIDA DE PRODUTO.        [7] HISTORICO DE MOVIMENTAÇÃO DE PRODUTO.
-    [4] MUDANÇA DE SETOR.        [8] SETOR DE PROCUTO ESPECIFICO NO ESTOQUE.
+    [4] MUDANÇA DE SETOR.        
 
     {opcValidation}
     '''))
@@ -39,17 +39,17 @@ def MainMenu():
                 ProductExit()
                 break
             case 4:
-                pass
+                Sectorchange()
                 break
             case 5:
                 consultProducts()
+                break
             case 6:
                 consultSpec()
                 break
             case 7:
                 ProductHistory()
-            case 8:
-                pass
+                break
             case _:
                 sy('cls')
                 opcValidation = '   Opição invalida, por favor digite um numero entre [1] e [6].'
@@ -666,6 +666,93 @@ def ProductHistory():
                     break 
                 else:
                     continue   
+
+
+# Mudar setor de produto
+def Sectorchange():
+    while True:
+        sy('cls')
+        print('\n    WILD BUNNY ELETRONICS\n')
+        print('\n>>  Mudança de setor.\n')
+        while True:
+
+# Perguntar nome do produto
+            product = input('\n    Produto:\n    ').upper()
+            ReturnMainmenu(product)
+            Sproduct = db.cur.execute(f'''
+            SELECT * FROM stock WHERE product = '{product}'
+            ''')
+            
+# Verificar se o produto existe no banco de dados
+            if Sproduct == []:
+                sy('cls')
+                print('\n    WILD BUNNY ELETRONICS\n')
+                print('\n>>  Mudança de setor.\n')
+                print('\n    Produto não encontrado!')
+                continue
+            else:
+                break
+
+# Perguntar para qual setor do estoque o produto esta mudando
+        while True:
+            try: newSector = int(input('''
+    Novo setor no estoque:
+                                    
+    [1] Norte
+    [2] Sul
+    [3] Leste
+    [4] Oeste
+                                    
+    '''))
+            except:
+                sy('cls')
+                print('\n    WILD BUNNY ELETRONICS\n')
+                print('\n>>  Mudança de setor.\n')
+                print('\n    Digite um numero entre [1] e [4].')
+                continue
+
+# Definir novo setor do produto
+            match newSector:
+                case 1:
+                    sector = 'Norte'
+                    break
+                case 2:
+                    sector = 'Sul'
+                    break
+                case 3:
+                    sector = 'Leste'
+                    break
+                case 4:
+                    sector = 'Oeste'
+                    break
+                case _:
+                    sy('cls')
+                    print('\n    WILD BUNNY ELETRONICS\n')
+                    print('\n>>  Mudança de setor.\n')
+                    print('\n    Setor invalido!')
+                    continue
+        
+# Salvar alteração no banco de dados
+        db.cur.execute(f'''
+        UPDATE stock SET location = '{sector}' WHERE product = '{product}'
+        ''')
+        db.con.commit()
+
+# Mostrar resultado final
+        sy('cls')
+        print('\n    WILD BUNNY ELETRONICS\n')
+        print('\n>>  Mudança de setor.\n')
+        print('\n    Alteração salva com sucesso.')
+        exit = input('\n    Mudar setor de outro produto?      [S/N]\n    ').upper()
+        if 'S' in exit:
+            continue   
+        else:
+            MainMenu()
+            break 
+    
+    
+
+
 
  
         
